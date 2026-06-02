@@ -65,6 +65,70 @@ Every session uses the following structure:
 
 ---
 
+## Session 2 — June 1, 2026
+
+**Model active:** Claude Sonnet 4.6
+**Session focus:** Development environment verification, VS Code extensions, Git configuration, GitHub repository setup
+**Documents updated this session:** Journal (this entry), Guidebook (Chapter 0 completed)
+
+### What Was Planned
+
+Verify and clean up the existing Python and Git installations, install the core VS Code extensions, configure GitHub, and get the three documents pushed to a live public repository.
+
+### What Actually Happened
+
+The session ran largely to plan, though the environment threw up several issues that needed working through before the clean setup was confirmed — which is normal for a first-time Windows dev environment.
+
+**Python verification** revealed the installation was coming from a Microsoft Store App Execution Alias rather than a proper python.org installation. The distinction matters because Store-based Python causes silent problems with pip, virtual environments, and VS Code's interpreter detection. Python was reinstalled from python.org (via winget, resulting in the `pythoncore-3.14-64` installation), the Store aliases were toggled off and back on via Settings → Apps → Advanced app settings → App execution aliases, and the installation was confirmed clean using `python -c "import sys; print(sys.executable)"`.
+
+**Final confirmed environment:**
+- Python 3.14.3 at `C:\Users\<username>\AppData\Local\Python\pythoncore-3.14-64\python.exe`
+- pip 26.0.1 wired to the same installation
+- Git 2.54.0.windows.1
+
+**VS Code extensions installed:**
+- Python (Microsoft) — includes Pylance and Python Debugger
+- Indent Rainbow
+- Error Lens
+- GitLens
+
+The Python interpreter was manually selected in VS Code via `Ctrl+Shift+P → Python: Select Interpreter` to ensure VS Code was pointed at the correct installation.
+
+**Git was configured** with user identity and the default branch name updated from `master` to `main` to match GitHub's modern default.
+
+**GitHub repository** `python-journey` created at `https://github.com/Druyii-404/python-journey`, cloned locally to `C:\Users\<username>\Documents\Projects\python-journey`, files added, and first commit pushed successfully.
+
+### Key Moments
+
+- **First terminal command** — the very first command typed was `copilot-debug <your command here>python --version`, including the placeholder text literally. A good early lesson: read the full command before hitting Enter, especially when copying from somewhere else.
+- **The `where` alias problem** — `where python` in PowerShell returned nothing because `where` is aliased to `Where-Object` in PowerShell, not the Windows `where.exe` command. Silent non-answers in a terminal are often caused by running a different command than intended. The fix is `where.exe python` or `Get-Command python`.
+- **Microsoft Store Python** — the `Get-Command python` output showing `Version 0.0.0.0` was the tell. App Execution Aliases always report 0.0.0.0 regardless of what they point to; it's not a broken version number, it's just metadata about the alias wrapper itself.
+- **First commit and push** — the four-stage Git mental model (untracked → staged → committed → pushed) was introduced and executed successfully. The repository is live and public.
+
+### Mistakes & What They Taught
+
+- **`python -- version` with a space** — typing `python -- version` instead of `python --version` caused Python to treat `version` as a filename to execute rather than a flag. The error message was accurate but confusing without knowing why. Command-line flags have no space between `--` and the flag name.
+- **The `(END)` pager** — after running `git config --list`, the output opened in `less` (Git's pager for long output) and the terminal appeared stuck. Pressing `q` exits the pager. This will appear again.
+- **Placeholder text** — treated instructional template text as part of the command to type. Terminal prompts do exactly what you tell them, including the parts you didn't mean.
+
+### Added to the Encyclopedia
+
+No Python syntax entries yet — the session was environment setup only.
+
+### Added to the Guidebook
+
+- Chapter 0 fully written: [Before the First Line — Setting Up](guidebook.md#chapter-0-before-the-first-line--setting-up)
+
+### Next Session
+
+- Scope the D&D Character Generator — define what the program needs to do before writing any code
+- First Python concepts: variables, data types, `print()`
+- First Encyclopedia entries expected
+
+---
+
+---
+
 ## Session 1 — June 1, 2026
 
 **Model active:** Claude Sonnet 4.6  

@@ -42,7 +42,7 @@ Python is learned here with purpose — each topic is introduced when it earns i
 
 | Chapter | Title | Status |
 |---------|-------|--------|
-| 0 | [Before the First Line — Setting Up](#chapter-0-before-the-first-line--setting-up) | 🔨 In progress |
+| 0 | [Before the First Line — Setting Up](#chapter-0-before-the-first-line--setting-up) | ✅ Complete |
 | 1 | The Shape of a Python Program | ⏳ Pending |
 | 2 | Values, Variables, and Types | ⏳ Pending |
 | 3 | Making Decisions — Control Flow | ⏳ Pending |
@@ -72,23 +72,121 @@ This chapter covers the setup done at the start of this project — and the reas
 
 ### 0.2 What You Need
 
-*This section will be completed once dev environment setup is done in session.*
+Three things form the foundation of this setup:
+
+- **Python** — the language runtime. The thing that actually reads and executes your code.
+- **VS Code** — the editor. Where you write code, run it, and debug it.
+- **Git + GitHub** — version control. How you save your work history and share it publicly.
+
+Everything else — libraries, tools, extensions — gets added when a specific project needs it.
 
 ### 0.3 Python Installation and Version Management
 
-*Pending — to be written after session covering installation.*
+**Install from python.org, not the Microsoft Store.**
+
+On Windows, Python can be installed in several ways. The Microsoft Store version installs a wrapper called an App Execution Alias rather than a real executable. This causes silent problems: pip behaves unreliably, virtual environments can break, and VS Code struggles to detect the interpreter correctly. The alias shows `Version 0.0.0.0` when inspected with `Get-Command python` in PowerShell — that's not a broken version number, it's just metadata about the wrapper itself.
+
+The correct approach is to download the installer directly from **python.org/downloads** and run it. On the first screen, tick **"Add python.exe to PATH"** before clicking anything else. This is the most commonly missed step and causes the most downstream confusion.
+
+**Verifying your installation:**
+
+Once installed, open a terminal and run:
+
+```powershell
+python --version
+```
+
+Then confirm which Python is actually being called:
+
+```powershell
+python -c "import sys; print(sys.executable)"
+```
+
+The path returned should point somewhere like `C:\Users\yourname\AppData\Local\Programs\Python\Python3xx\python.exe` — not `Microsoft\WindowsApps`. If you see the latter, the Store alias is still intercepting the command.
+
+Also confirm pip — Python's package manager — is present and wired to the same installation:
+
+```powershell
+pip --version
+```
+
+The path in pip's output should match the path from the `sys.executable` check above.
+
+**A note on PowerShell vs the Windows Command Prompt:**
+
+PowerShell is not the same as the old Command Prompt, and it's not the same as a Unix terminal. It has its own language and its own aliases that can shadow commands you expect to exist. A key example: `where` in PowerShell is an alias for `Where-Object` — a PowerShell filtering command — not the Windows `where.exe` that locates executables. Running `where python` in PowerShell returns nothing and no error, because it ran *something*, just not what was intended. The correct PowerShell equivalent is `Get-Command python`.
+
+When something returns no output and no error in PowerShell, that's often why.
 
 ### 0.4 VS Code and Recommended Extensions
 
-*Pending — to be written after session covering editor setup.*
+VS Code is the editor used throughout this project. It's free, well-maintained, and has strong Python support.
+
+**Core extensions installed at setup:**
+
+| Extension | Publisher | Purpose |
+|-----------|-----------|---------|
+| Python | Microsoft | Core Python support — IntelliSense, run buttons, debugging. Installs Pylance and the Python Debugger alongside it. |
+| Indent Rainbow | oderwat | Colours each indentation level differently. Critical for Python, where indentation is syntax — a wrong indent changes what code does or breaks it entirely. |
+| Error Lens | Alexander | Shows errors and warnings inline next to the code, rather than as underlines you have to hover over. |
+| GitLens | GitKraken | Layers Git history directly into the editor — shows what changed, when, and in which commit, without leaving the file. |
+
+**Selecting the Python interpreter:**
+
+After installing the Python extension, VS Code needs to be told which Python installation to use. Open the Command Palette (`Ctrl+Shift+P`), type `Python: Select Interpreter`, and choose the path confirmed during the installation verification step. This ensures VS Code and the terminal are using the same Python.
 
 ### 0.5 The Terminal — Your Other Editor
 
-*Pending.*
+The terminal is where you run code, install packages, and interact with Git. VS Code has an integrated terminal accessible via `Ctrl+`` (the backtick key, above Tab). Using the integrated terminal is a good habit — it keeps everything in one place and ensures the terminal uses the same environment VS Code is pointed at.
+
+**A few terminal fundamentals worth knowing early:**
+
+- Commands do exactly what you type — including the parts you didn't mean. Read the full command before pressing Enter.
+- `cd` navigates between folders. `cd ~\Documents` goes to your Documents folder. `cd ..` goes up one level.
+- `mkdir Projects` creates a folder called Projects in the current location.
+- When Git output is long, it opens in a pager called `less`. The terminal appears stuck with `(END)` at the bottom. Press `q` to exit.
 
 ### 0.6 GitHub — Tracking Your Work From Day One
 
-*Pending — to be written after session covering Git basics.*
+Git is a version control system — it tracks changes to your files over time, letting you see what changed, when, and why. GitHub is a hosting platform for Git repositories, making them accessible online and shareable.
+
+**Setting up Git identity:**
+
+Before making any commits, Git needs to know who you are. This identity appears on every commit in your history:
+
+```powershell
+git config --global user.name "Your Name"
+git config --global user.email "you@youremail.com"
+```
+
+Also update the default branch name to match GitHub's modern default:
+
+```powershell
+git config --global init.defaultbranch main
+```
+
+**The four-stage mental model:**
+
+Every change to a file goes through four states before it's on GitHub:
+
+1. **Untracked / Modified** — the change exists on your machine; Git isn't doing anything with it yet
+2. **Staged** — you've told Git to include this change in the next commit (`git add .`)
+3. **Committed** — the change is saved as a permanent local snapshot (`git commit -m "message"`)
+4. **Pushed** — the snapshot is sent to GitHub (`git push`)
+
+`git status` at any point shows you where your files currently sit in this pipeline.
+
+**Starting a project the clean way:**
+
+Create the repository on GitHub first (with no README, no .gitignore, no licence — these create a commit that complicates the first push). Then clone it locally:
+
+```powershell
+git clone https://github.com/yourusername/your-repo-name
+```
+
+Cloning creates the folder, names it to match the repo, and sets up the GitHub connection automatically. This is cleaner than creating a local folder first and connecting the remote manually.
+
+> 🔗 **Journal reference:** [Session 2](journal.md#session-2--june-1-2026) covers the full account of the environment setup, including the mistakes made and what they revealed.
 
 ---
 
