@@ -43,7 +43,9 @@ This repository maintains three documents that serve different purposes and audi
 
 | Project | Description | Status |
 |---------|-------------|--------|
-| [D&D Character Generator](projects/dnd_character_generator/) | Randomised player character generator — the first project used to establish core Python competencies | 🔨 In progress |
+| [D&D Character Generator](projects/dnd_character_generator/) | Randomised Level 1 D&D 5e character generator — the first project used to establish core Python competencies, built across three phases | 🔨 In progress |
+
+See [project brief](projects/dnd_character_generator/BRIEF.md) for full scope and phase breakdown.
 
 ---
 
@@ -58,6 +60,7 @@ This repository maintains three documents that serve different purposes and audi
 │   └── journal.md           ← Doc 3: Session-by-session journal
 └── projects/
     └── dnd_character_generator/
+        └── BRIEF.md         ← Project scope, phases, and historical context
 ```
 
 ---

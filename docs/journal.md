@@ -65,6 +65,87 @@ Every session uses the following structure:
 
 ---
 
+## Session 3 — June 2, 2026
+
+**Model active:** Claude Sonnet 4.6
+**Session focus:** D&D Character Generator scoping, historical HeroGen review, and project plan
+**Documents updated this session:** Journal (this entry), README (project scope), created `projects/dnd_character_generator/BRIEF.md`
+
+### What Was Planned
+
+Scope the D&D Character Generator before writing any code — agreeing on what the program needs to do, how ambitious to be, and how to approach it as a learning vehicle.
+
+### What Actually Happened
+
+The session opened with a privacy fix: the Session 2 journal entry contained the actual GitHub username in a repository URL. This was corrected to `yourusername` as a generic placeholder, and a standing rule was established — any personally identifying paths, usernames, or account details are anonymised before being written to these documents, not after.
+
+**Historical review — HeroGen (May–July 2020)**
+
+Before scoping the new project, the original self-taught attempt was reviewed in full. The project consisted of ten files:
+
+- `Hero_Generator.py` — the main entry point, importing from all other modules
+- `Race_Picker.py` — 16 races with subrace logic, Dragonborn colour variants, Half-Elf special handling
+- `Class_Picker.py` — 12 classes with subclass variants (Cleric domains, Sorcerer origins, Warlock patrons, Fighter styles, Ranger features)
+- `Stat_Gen.py` — 4d6 drop-lowest stat generation across a pool of six
+- `Background_Gen.py` — 13 PHB backgrounds with full personality, ideal, bond, and flaw tables, plus variants
+- `Trinket_Gen.py` — 100-item trinket pool
+- `Dice Rolls.py` — a dice utility module (d2 through d100)
+- `Core_v3.py` — an earlier iteration of the stat roller
+- `Playground.py` — isolated test code for skill proficiency logic
+- `Abilities_List.py` — a stub placeholder (just the word "abilities")
+
+The original inspiration was [Who the f*** is my DND character?](https://whothefuckismydndcharacter.com/) — a flavour-first generator. What was actually built went considerably further: a mechanically complete Level 1 character generator covering stats, skills, saves, features, spells, equipment, languages, armor class, health, money, and personality. The earliest file is dated May 13, 2020; the latest July 5, 2020.
+
+**What HeroGen revealed**
+
+The code was functional but showed the characteristic patterns of self-taught work — things that worked without necessarily being understood:
+
+- **Lists of lists** used everywhere because dictionaries weren't known. Positions like `race[7]` for speed, `race[8]` for skills, `race[9]` for languages — readable to nobody.
+- **`while len(x) <= N`** used instead of `for` loops throughout.
+- **The same 18-branch `if/elif` chain** for skill proficiency checking written three times over (once for race, once for background, once for class).
+- **String concatenation** with `+` and `str()` instead of f-strings.
+- **Modules that run code on import** — `stat_pool()` fires the moment `Stat_Gen` is imported, which is a structural problem.
+- **`from math import *`** used just to access `floor()`.
+
+None of this prevented the code from working. All of it is what the rebuild is for.
+
+**Scoping decisions made**
+
+The project was scoped in three phases:
+
+- **Phase 1 — Core rebuild:** Regenerate all of HeroGen's output using proper Python — dictionaries instead of indexed lists, `for` loops, f-strings, clean functions, modules that don't execute on import.
+- **Phase 2 — Desktop UI:** A `tkinter` window with a Generate button. Character sheet displayed in the app. Possibly with options to lock a race or class before generating.
+- **Phase 3 — PDF export:** Map the generated character onto the official 5e fillable character sheet PDF using `pypdf`, producing a file ready to print and play.
+
+The UI choice was deliberate: `tkinter` (desktop window) was chosen over a browser-based interface (Flask) because it stays within Python fundamentals, introduces GUI concepts without web dependencies, and produces a more satisfying standalone result. A web interface remains a future option but isn't the immediate learning priority.
+
+### Key Moments
+
+- **HeroGen was more complete than expected** — reviewing it made clear that the gap isn't "I've never done this," it's "I did this without fully understanding it." The rebuild is about closing that gap.
+- **The instinct vs. understanding framing** — the clearest way to articulate what's different about the new project: the old code shows what was achievable by feel; the new code will show what's achievable by comprehension.
+- **PDF as the finish line** — the decision that the final output should be a playable character sheet, not just terminal output, gives the project a concrete and satisfying end state.
+
+### Mistakes & What They Taught
+
+- **Privacy oversight from Session 2** — the GitHub username had been written directly into the journal. Public repositories need all identifying information removed before it's committed, not corrected after. The fix is simple; the habit is what matters.
+
+### Added to the Encyclopedia
+
+No Python syntax entries — this was a planning session.
+
+### Added to the Guidebook
+
+No new chapters — this was a planning session.
+
+### Next Session
+
+- First Python concepts: variables, data types, `print()`
+- First Encyclopedia entries
+- First lines of code written for the D&D Character Generator
+- Starting point: understanding what a variable is before building the race dictionary
+
+---
+
 ## Session 2 — June 1, 2026
 
 **Model active:** Claude Sonnet 4.6
@@ -82,7 +163,7 @@ The session ran largely to plan, though the environment threw up several issues 
 **Python verification** revealed the installation was coming from a Microsoft Store App Execution Alias rather than a proper python.org installation. The distinction matters because Store-based Python causes silent problems with pip, virtual environments, and VS Code's interpreter detection. Python was reinstalled from python.org (via winget, resulting in the `pythoncore-3.14-64` installation), the Store aliases were toggled off and back on via Settings → Apps → Advanced app settings → App execution aliases, and the installation was confirmed clean using `python -c "import sys; print(sys.executable)"`.
 
 **Final confirmed environment:**
-- Python 3.14.3 at `C:\Users\<username>\AppData\Local\Python\pythoncore-3.14-64\python.exe`
+- Python 3.14.3 at `C:\Users\yourusername\AppData\Local\Python\pythoncore-3.14-64\python.exe`
 - pip 26.0.1 wired to the same installation
 - Git 2.54.0.windows.1
 
@@ -96,7 +177,7 @@ The Python interpreter was manually selected in VS Code via `Ctrl+Shift+P → Py
 
 **Git was configured** with user identity and the default branch name updated from `master` to `main` to match GitHub's modern default.
 
-**GitHub repository** `python-journey` created at `https://github.com/Druyii-404/python-journey`, cloned locally to `C:\Users\<username>\Documents\Projects\python-journey`, files added, and first commit pushed successfully.
+**GitHub repository** `python-journey` created at `https://github.com/yourusername/python-journey`, cloned locally to `C:\Users\yourusername\Documents\Projects\python-journey`, files added, and first commit pushed successfully.
 
 ### Key Moments
 
