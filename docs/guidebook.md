@@ -43,7 +43,7 @@ Python is learned here with purpose — each topic is introduced when it earns i
 | Chapter | Title | Status |
 |---------|-------|--------|
 | 0 | [Before the First Line — Setting Up](#chapter-0-before-the-first-line--setting-up) | ✅ Complete |
-| 1 | The Shape of a Python Program | ⏳ Pending |
+| 1 | [The Shape of a Python Program](#chapter-1-the-shape-of-a-python-program) | ✅ Complete |
 | 2 | Values, Variables, and Types | ⏳ Pending |
 | 3 | Making Decisions — Control Flow | ⏳ Pending |
 | 4 | Doing Things Repeatedly — Loops | ⏳ Pending |
@@ -187,6 +187,188 @@ git clone https://github.com/yourusername/your-repo-name
 Cloning creates the folder, names it to match the repo, and sets up the GitHub connection automatically. This is cleaner than creating a local folder first and connecting the remote manually.
 
 > 🔗 **Journal reference:** [Session 2](journal.md#session-2--june-1-2026) covers the full account of the environment setup, including the mistakes made and what they revealed.
+
+---
+
+---
+
+## Chapter 1: The Shape of a Python Program
+
+*Variables, data types, expressions, lists, and how a Python file runs.*
+
+### 1.1 How Python Runs Your Code
+
+When you run a Python file, Python reads it from top to bottom and executes each line in order. There's no separate compilation step — it just runs. This means two things:
+
+First, order matters. If you try to use a variable before you've defined it, Python will error because it hasn't encountered that variable yet when it reaches the line that needs it.
+
+Second, you can see results immediately. Write a line, run the file, see what happens. This tight feedback loop is one of Python's best qualities as a learning environment.
+
+The integrated terminal in VS Code and the `python` interactive shell (opened by typing `python` with no filename) both let you run individual lines on the spot — useful for testing small ideas without running a whole file.
+
+### 1.2 Variables
+
+A variable is a named container for a value. You create one by writing a name, an equals sign, and a value:
+
+```python
+race = 'Tiefling'
+level = 1
+speed = 30
+```
+
+The `=` here is not a mathematical equals sign — it's an instruction: "store this value under this name." The name goes on the left; the value goes on the right.
+
+Variable names in Python use `snake_case` — all lowercase, words separated by underscores. Names should describe what the value represents. `race` is better than `r`. `movement_speed` is better than `ms`.
+
+Once a variable is defined, you can use its name anywhere you'd use the value directly:
+
+```python
+print(race)         # prints: Tiefling
+print(f'Level: {level}')  # prints: Level: 1
+```
+
+> 🔗 **Encyclopedia:** [variable assignment](encyclopedia.md#variable-assignment)
+
+### 1.3 Data Types
+
+Every value in Python has a type. The four types used most in this project are:
+
+**`str` — strings.** Any text, wrapped in quotes. `'Tiefling'`, `'D&D Character Generator'`, `'Fireball'`. Single and double quotes both work; this project uses single quotes throughout.
+
+**`int` — integers.** Whole numbers, no quotes. `1`, `30`, `-2`. Most D&D values — level, speed, stats, hit points, gold — are integers.
+
+**`float` — floats.** Decimal numbers. `3.5`, `1.5`. Less common in this project; regular division with `/` always produces a float, even when the result is a whole number (`10 / 2` gives `5.0`, not `5`).
+
+**`bool` — booleans.** `True` or `False`. Capital T and F, no quotes. Used for yes/no states: does this character have proficiency in Perception? Does a race grant darkvision?
+
+Python's `bool` is actually a subclass of `int` — `True` equals `1` and `False` equals `0`. They're equal in value but different in type. Use `True`/`False` rather than `1`/`0` whenever the intent is a yes/no state; the code reads more clearly.
+
+> 🔗 **Encyclopedia:** [str](encyclopedia.md#str) · [int](encyclopedia.md#int) · [float](encyclopedia.md#float) · [bool](encyclopedia.md#bool)
+
+### 1.4 print() and f-strings
+
+`print()` outputs a value to the terminal. It's your primary tool for seeing what your code is actually doing.
+
+```python
+print('D&D Character Generator')
+print(race)
+print(level)
+```
+
+Passing a variable name *without* quotes prints its value. Passing it *with* quotes prints the word itself.
+
+For labelled output — showing a value alongside some context — use an **f-string**: a string prefixed with `f` where variables or expressions inside `{}` are evaluated and inserted:
+
+```python
+print(f'Race: {race}')           # Race: Tiefling
+print(f'Level: {level}')         # Level: 1
+print(f'Races available: {len(races)}')  # evaluates len() inline
+```
+
+f-strings are cleaner than concatenating with `+` and avoid the need to call `str()` on non-string values. Any valid Python expression can go inside `{}`.
+
+> 🔗 **Encyclopedia:** [print()](encyclopedia.md#print) · [f-strings](encyclopedia.md#f-strings)
+
+### 1.5 Arithmetic and Floor Division
+
+Python supports standard arithmetic — `+`, `-`, `*`, `/`. The one that matters most in this project is `//`: **floor division**, which divides and rounds the result *down* to the nearest whole number.
+
+This is exactly what D&D's modifier formula requires:
+
+```python
+modifier = (score - 10) // 2
+```
+
+A score of 14: `(14 - 10) // 2 = 2`. A score of 9: `(9 - 10) // 2 = -1`. The floor division handles negative numbers correctly — `-1 // 2` is `-1`, not `0`, because floor division always rounds toward negative infinity.
+
+In the original HeroGen, this calculation used `math.floor()`, which required importing the entire math library. Python's `//` operator does the same job with no import. This is one of many places where knowing the language well removes unnecessary complexity.
+
+> 🔗 **Encyclopedia:** [arithmetic operators](encyclopedia.md#arithmetic-operators) · [// floor division](encyclopedia.md#---floor-division)
+
+### 1.6 Comments
+
+A comment is a note for human readers that Python ignores entirely. Written with `#`:
+
+```python
+# D&D modifier: every 2 points above or below 10 gives +1 or -1
+modifier = (score - 10) // 2
+```
+
+Comments are most valuable when they explain *why* something is written the way it is — the rule, the constraint, or the decision behind the code. A comment that just restates what the next line already shows adds nothing. A comment that explains the D&D rule behind a formula earns its place.
+
+> 🔗 **Encyclopedia:** [comments](encyclopedia.md#comments)
+
+### 1.7 Lists
+
+A list is an ordered collection of values stored in a single variable:
+
+```python
+races = ['Bugbear', 'Half-Orc', 'Tiefling', 'Dragonborn', 'Gnome']
+```
+
+Square brackets, values separated by commas. The list can hold any type — a list of strings, a list of numbers, or a mix.
+
+Items are accessed by **index** — their position in the list, starting from `0`:
+
+```python
+races[0]   # 'Bugbear'
+races[2]   # 'Tiefling'
+```
+
+Python also supports **negative indexing**: counting from the end. `races[-1]` is always the last item, `races[-2]` the second to last — regardless of how long the list is. Prefer `races[-1]` over `races[4]` for the last item; if the list ever changes length, the negative index still works and the hardcoded one doesn't.
+
+`len()` returns the count of items in any collection:
+
+```python
+len(races)  # 5
+```
+
+Lists are used throughout the character generator — race pools, spell lists, equipment, languages. They're a foundational structure.
+
+> 🔗 **Encyclopedia:** [list](encyclopedia.md#list) · [len()](encyclopedia.md#len)
+
+### 1.8 Importing Modules and Randomness
+
+Python's standard library contains modules — files of pre-written tools — that can be loaded with `import`. Imports always go at the top of a file:
+
+```python
+import random
+```
+
+The `random` module provides tools for random selection. The one used most in this project is `random.choice()`, which picks one item at random from a list:
+
+```python
+chosen_race = random.choice(races)
+```
+
+Every time the program runs, a different race is selected. This one line is the core mechanic of the entire generator — everything else is building the data for it to choose from and presenting the result.
+
+**Important:** store the result in a variable rather than calling `random.choice()` multiple times. Each call is independent and produces a separate random result. If the chosen race is referenced in several places and `random.choice()` is called each time, the program might print one race for the name and a different race for the features. Store once; reference the variable.
+
+> 🔗 **Encyclopedia:** [import](encyclopedia.md#import) · [random.choice()](encyclopedia.md#randomchoice)
+
+### 1.9 Putting It Together — First Lines of the Generator
+
+By the end of Session 4, the working file contained:
+
+```python
+import random
+
+title = 'D&D Character Generator'
+races = ['Bugbear', 'Half-Orc', 'Tiefling', 'Dragonborn', 'Gnome']
+chosen_race = random.choice(races)
+stat_str = 14
+# D&D modifier: every 2 points above or below 10 gives +1 or -1
+mod_str = (stat_str - 10) // 2
+
+print(title)
+print(f'Strength: {stat_str} | Modifier: {mod_str}')
+print(f'You got the {chosen_race} race out of a possible {len(races)}!')
+```
+
+This is not yet a proper character generator — the data is minimal and nothing is structured. But every element is real: a working random selection from a pool, a correct modifier calculation, and formatted output. The chapters ahead will add the data structures and organisation that turn these building blocks into a complete program.
+
+> 🔗 **Journal reference:** [Session 4](journal.md#session-4--june-4-2026) covers the full account of how these concepts were introduced and where mistakes were made.
 
 ---
 

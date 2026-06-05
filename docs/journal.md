@@ -65,6 +65,128 @@ Every session uses the following structure:
 
 ---
 
+## Session 4 — June 4, 2026
+
+**Model active:** Claude Sonnet 4.6
+**Session focus:** First Python concepts — variables, data types, operators, lists, and random selection
+**Documents updated this session:** Journal (this entry), Encyclopedia (first entries across seven sections), Guidebook (Chapter 1 started)
+
+### What Was Planned
+
+First Python concepts: variables, data types, `print()`. First Encyclopedia entries. First lines of code written for the D&D Character Generator.
+
+### What Actually Happened
+
+The session opened with `character.py` created inside `projects/dnd_character_generator/`. This is the working file for Session 4 — it's exploratory and holds demonstration code alongside the first real generator logic. It will be restructured as the project develops.
+
+**`print()` and strings**
+
+The first task was to print the exact text `D&D Character Generator`. The output was different — custom text that worked but didn't match the specification. This surfaced an early lesson: precision with requirements matters. "Print some text" and "print this exact text" are different instructions, and the terminal does exactly what you tell it.
+
+The concept of a **string** emerged naturally here — any sequence of characters wrapped in quotes. Single and double quotes both work; the project uses single quotes throughout for consistency.
+
+**Variables and data types**
+
+A variable is a named container for a value. Four core data types were introduced and stored as variables:
+
+- `str` — strings: `title = 'D&D Character Generator'`
+- `int` — whole numbers: `player_level = 1`
+- `float` — decimal numbers: `player_gold = 10.6`
+- `bool` — `True` or `False`: `player_conscious = True`
+
+A question arose about whether booleans could be stored as 0 and 1. The answer: `bool` is a subclass of `int` in Python — `True` *is* `1` and `False` *is* `0` under the hood. They're equal in value but different in type. The project uses `True`/`False` for readability.
+
+**f-strings**
+
+Rather than concatenating strings with `+`, Python offers f-strings — strings prefixed with `f` where variables are inserted inside `{}`:
+
+```python
+print(f'Strength: {stat_str} Modifier: {mod_str}')
+```
+
+`len()` can be called directly inside an f-string without needing a separate variable, which was used to good effect in the final output line.
+
+**Arithmetic operators and floor division**
+
+The modifier formula from HeroGen — previously `floor((stat - 10) / 2)` using `from math import *` — was replaced with:
+
+```python
+mod_str = (stat_str - 10) // 2
+```
+
+The `//` operator performs floor division natively. No import required. This was the first concrete example of HeroGen doing something the hard way because the simpler approach wasn't known. Tested with `stat_str = 14` (result: `2`) and `stat_str = 9` (result: `-1`).
+
+**Comments**
+
+Comments are written with `#` and ignored by Python entirely. The first comment written was:
+
+```python
+# Converting the stat to a modifier, (stat-10)//2
+```
+
+This prompted a refinement: a comment that repeats the formula is redundant — the code already shows the formula. A better comment explains *why* the line exists — in this case, the D&D rule behind it.
+
+**Lists**
+
+A list is an ordered collection of values in square brackets:
+
+```python
+races = ['Bugbear', 'Half-Orc', 'Tiefling', 'Dragonborn', 'Gnome']
+```
+
+Items are accessed by index starting at `0`. Python also supports negative indexing: `races[-1]` always returns the last item regardless of list length — more robust than hardcoding the final index position. `len()` returns the number of items in a list.
+
+**`import` and `random.choice()`**
+
+Python's standard library is accessed via `import`. Imports go at the top of the file. The `random` module provides `random.choice()`, which selects one item at random from a list:
+
+```python
+chosen_race = random.choice(races)
+```
+
+Storing the result in a variable rather than calling `random.choice()` inline in the print statement is important: calling it multiple times would produce a different result each time. Storing it once keeps the character consistent.
+
+The final output line:
+
+```python
+print(f'You got the {chosen_race} race out of a possible {len(races)}!')
+```
+
+This is the first piece of real generator logic — a random race selected from a pool and presented to the user.
+
+### Key Moments
+
+- **First line of code written** — `print("This project is just beginning!")`. Slightly off the brief, but `print()` was understood immediately.
+- **Floor division replacing `math.floor()`** — the first direct improvement on HeroGen's patterns, made concrete by working through the modifier formula.
+- **`random.choice()` producing different output on every run** — the moment where the code starts behaving like a generator rather than a static script.
+
+### Mistakes & What They Taught
+
+- **First task output didn't match the specification** — wrote custom text instead of the requested string. Terminal programs are precise: they do exactly what they're told, including the parts that weren't intended. Specifications matter.
+- **First comment restated the formula** — `# (stat-10)//2` just repeats what the next line already shows. Comments add value when they explain *why* something exists, not *what* it does.
+
+### Added to the Encyclopedia
+
+- **Data Types:** `str`, `int`, `float`, `bool`
+- **Variables & Assignment:** variable assignment syntax, comments
+- **Operators:** arithmetic operators, `//` floor division, `%` modulo
+- **Collections:** `list` — creation, indexing, negative indexing
+- **String Methods:** f-strings
+- **Built-in Functions:** `print()`, `len()`
+- **Modules & Imports:** `import` statement, `random.choice()`
+
+### Added to the Guidebook
+
+- Chapter 1 started: [The Shape of a Python Program](guidebook.md#chapter-1-the-shape-of-a-python-program)
+
+### Next Session
+
+- Dictionaries — the data structure that replaces HeroGen's indexed lists
+- Building the first real race data with named keys instead of positional indexes
+- First look at how the generator's data layer will be structured
+
+---
+
 ## Session 3 — June 2, 2026
 
 **Model active:** Claude Sonnet 4.6
