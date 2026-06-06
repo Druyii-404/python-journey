@@ -65,6 +65,124 @@ Every session uses the following structure:
 
 ---
 
+## Session 5 — June 5, 2026
+
+**Model active:** Claude Sonnet 4.6
+**Session focus:** Dictionaries — the data structure that replaces HeroGen's indexed lists
+**Documents updated this session:** Journal (this entry), Encyclopedia (dict, nested access), Guidebook (Chapter 6 started)
+
+### What Was Planned
+
+Dictionaries — replacing HeroGen's indexed lists with named keys. Building the first real race data structure.
+
+### What Actually Happened
+
+**Introducing dictionaries**
+
+The session opened with the problem statement: a race in D&D is not just a name, it's a collection of related data — name, speed, stat bonuses, features, languages. HeroGen stored this as a list of lists, where position determined meaning (`race[7]` for speed). A dictionary solves this by giving each value a name.
+
+A dictionary stores data as key-value pairs:
+
+```python
+hill_dwarf = {
+    'name': 'Hill Dwarf',
+    'speed': 25,
+    'con_bonus': 2,
+    'wis_bonus': 1
+}
+```
+
+Values are accessed by key: `hill_dwarf['speed']` rather than `race[7]`. Immediately more readable.
+
+**Lists of dictionaries**
+
+The question arose of how to store multiple races for random selection. The first instinct was to put dictionary *names* into a list — but `random.choice(['hill_dwarf', 'tiefling'])` returns the *string* `'hill_dwarf'`, not the dictionary object. Python has no automatic link between a string and a variable of the same name.
+
+The correct pattern is to put the dictionaries themselves directly into the list:
+
+```python
+races = [
+    {'name': 'Hill Dwarf', ...},
+    {'name': 'Tiefling', ...},
+]
+chosen_race = random.choice(races)
+```
+
+`random.choice()` then returns a whole dictionary, and keys are accessed on that result as normal.
+
+**Consistent keys**
+
+An initial attempt used different bonus keys per race — `bonus_con` for Hill Dwarf, `bonus_cha` for Tiefling. This causes a `KeyError` at runtime: if the generator picks a Tiefling and then tries to access `chosen_race['bonus_con']`, the key doesn't exist.
+
+The fix: every race dictionary must have the same keys, with `0` where there's no bonus:
+
+```python
+{'name': 'Hill Dwarf', 'speed': 25, 'bonus_str': 0, 'bonus_dex': 0, 'bonus_con': 2, 'bonus_int': 0, 'bonus_wis': 1, 'bonus_cha': 0}
+```
+
+This guarantees `chosen_race['bonus_con']` always succeeds regardless of which race was picked.
+
+**Indentation**
+
+A formatting issue appeared during the list-of-dicts task: each dictionary was indented progressively further than the last, visually suggesting nesting rather than siblings at the same level. Python tolerates this but a reader doesn't. All dictionaries in a list should be indented to the same level.
+
+**Dict values in arithmetic**
+
+With consistent keys, the racial bonus can be applied directly in a calculation:
+
+```python
+stat_con = 12
+final_con = stat_con + chosen_race['bonus_con']
+```
+
+This is the core mechanic of the stat generation system — rolled score plus racial bonus equals final value.
+
+**Dict values as lists — nested access**
+
+Dictionary values can hold any type, including lists. Languages are stored as a list inside each race dictionary:
+
+```python
+{'name': 'Hill Dwarf', 'languages': ['Common', 'Dwarvish'], ...}
+```
+
+Accessing a value inside a nested list uses chained square brackets:
+
+```python
+chosen_race['languages'][0]  # 'Common'
+chosen_race['languages'][1]  # 'Dwarvish'
+```
+
+The first `[]` retrieves the list from the dictionary; the second indexes into that list.
+
+This works — but hardcoding `[0]` and `[1]` assumes exactly two languages. It breaks with one language or three. The fix requires iterating over the list, which needs a `for` loop.
+
+### Key Moments
+
+- **The naming instinct** — the first approach to multi-race random selection was to put variable names into a list, which is a logical but incorrect assumption. Understanding the difference between a variable name (a label) and the object it references is a foundational concept.
+- **Consistent keys as a contract** — the realisation that all dicts in a collection must share the same keys turns the data structure from fragile to reliable. This discipline carries through the entire generator.
+- **The cliffhanger** — the session ended with a working but fragile language printer. The limitation (hardcoded indexes) is understood; the solution (for loops) is the next session's opening.
+
+### Mistakes & What They Taught
+
+- **Inconsistent keys across race dicts** — giving each race a different bonus key (`bonus_con`, `bonus_cha`, `bonus_int`) produces a `KeyError` at runtime for any race that doesn't have the accessed key. Corrected by standardising all six bonus keys across every race with `0` as the default.
+- **Progressive indentation drift** — formatting the list of dicts with each subsequent dict indented further than the last. Python doesn't error on this, but it visually implies nesting. Corrected to consistent indentation.
+
+### Added to the Encyclopedia
+
+- **Collections:** `dict`, nested access
+
+### Added to the Guidebook
+
+- Chapter 6 started: [Organising Data — Collections](guidebook.md#chapter-6-organising-data--collections)
+
+### Next Session
+
+- `for` loops — iterating over lists
+- Fixing the hardcoded language index problem
+- Looping over race features and other list-type values
+
+---
+
 ## Session 4 — June 4, 2026
 
 **Model active:** Claude Sonnet 4.6

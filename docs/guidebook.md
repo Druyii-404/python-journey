@@ -48,7 +48,7 @@ Python is learned here with purpose — each topic is introduced when it earns i
 | 3 | Making Decisions — Control Flow | ⏳ Pending |
 | 4 | Doing Things Repeatedly — Loops | ⏳ Pending |
 | 5 | Organising Code — Functions | ⏳ Pending |
-| 6 | Organising Data — Collections | ⏳ Pending |
+| 6 | [Organising Data — Collections](#chapter-6-organising-data--collections) | 🔄 In progress |
 | 7 | Worked Example: D&D Character Generator | ⏳ Pending |
 | 8 | Reading and Writing Files | ⏳ Pending |
 | 9 | When Things Go Wrong — Error Handling | ⏳ Pending |
@@ -371,6 +371,128 @@ This is not yet a proper character generator — the data is minimal and nothing
 > 🔗 **Journal reference:** [Session 4](journal.md#session-4--june-4-2026) covers the full account of how these concepts were introduced and where mistakes were made.
 
 ---
+
+---
+
+---
+
+## Chapter 6: Organising Data — Collections
+
+*Lists, dictionaries, and how structured data makes a generator possible.*
+
+> This chapter covers collections as they've appeared so far. It will expand as loops and more advanced patterns are introduced in later sessions.
+
+### 6.1 The Problem with Scattered Variables
+
+Early in the project, a race was represented as separate variables:
+
+```python
+race_name = 'Hill Dwarf'
+race_speed = 25
+race_con_bonus = 2
+```
+
+This works for one race. It falls apart for sixteen. You'd need forty-plus variables, none of them connected, and no way to randomly select one complete "set" of race data as a unit. The solution is a **collection** — a single variable that holds multiple related values together.
+
+Python has several collection types. The two most important for this project are lists and dictionaries.
+
+### 6.2 Lists — Ordered Sequences
+
+A list holds multiple values in order, in a single variable:
+
+```python
+races = ['Hill Dwarf', 'Tiefling', 'Vedalken', 'Dragonborn']
+```
+
+Items are accessed by their position (**index**), counting from zero:
+
+```python
+races[0]   # 'Hill Dwarf'
+races[-1]  # 'Dragonborn' — negative index, always the last item
+```
+
+`len()` gives the count of items. `random.choice()` picks one at random.
+
+Lists are used throughout the generator for anything that's a pool of options: spell lists, equipment choices, language pools, racial features.
+
+The limitation of a list of strings is that it only stores names — not the associated data. A race isn't just a name. This is where dictionaries come in.
+
+> 🔗 **Encyclopedia:** [list](encyclopedia.md#list)
+
+### 6.3 Dictionaries — Named Data
+
+A dictionary stores data as **key-value pairs**. Instead of accessing data by position, you access it by name:
+
+```python
+hill_dwarf = {
+    'name': 'Hill Dwarf',
+    'speed': 25,
+    'bonus_con': 2,
+    'bonus_wis': 1
+}
+
+hill_dwarf['speed']      # 25
+hill_dwarf['bonus_con']  # 2
+```
+
+Compare `hill_dwarf['speed']` to HeroGen's `race[7]`. Both retrieve the same value. One tells you what it is; the other tells you nothing without reading the comment at the top of the file that maps positions to meanings.
+
+Dictionaries are defined with curly braces `{}`, keys and values separated by `:`, entries separated by commas. Keys are almost always strings. Values can be any type — integers, strings, booleans, or even lists.
+
+> 🔗 **Encyclopedia:** [dict](encyclopedia.md#dict)
+
+### 6.4 Lists of Dictionaries
+
+A list can contain dictionaries as its items. This is the core data structure for the character generator — a pool of complete race records that `random.choice()` can select from:
+
+```python
+races = [
+    {'name': 'Hill Dwarf', 'speed': 25, 'bonus_con': 2, 'bonus_wis': 1},
+    {'name': 'Tiefling', 'speed': 30, 'bonus_int': 1, 'bonus_cha': 2},
+    {'name': 'Vedalken', 'speed': 30, 'bonus_int': 2, 'bonus_wis': 1}
+]
+
+chosen_race = random.choice(races)
+print(chosen_race['name'])   # one of the three race names, at random
+print(chosen_race['speed'])  # the speed for whichever race was chosen
+```
+
+`random.choice()` returns one complete dictionary. From that point, all keys are available on the result.
+
+**The consistent keys rule.** Every dictionary in the collection must have the same keys. If `'bonus_con'` exists in Hill Dwarf but not in Tiefling, accessing `chosen_race['bonus_con']` raises a `KeyError` whenever Tiefling is selected. The fix is to include all keys in every dictionary, using `0` or `False` as defaults where there's no relevant value:
+
+```python
+{'name': 'Tiefling', 'speed': 30, 'bonus_str': 0, 'bonus_dex': 0,
+ 'bonus_con': 0, 'bonus_int': 1, 'bonus_wis': 0, 'bonus_cha': 2}
+```
+
+This gives the data structure a contract: any code that accesses `chosen_race['bonus_con']` can do so safely, regardless of which race was selected.
+
+### 6.5 Dict Values as Lists — Nested Access
+
+Dictionary values can themselves be lists. Languages and racial features are stored this way:
+
+```python
+race = {
+    'name': 'Hill Dwarf',
+    'languages': ['Common', 'Dwarvish'],
+    'speed': 25
+}
+```
+
+Accessing a value inside a nested list chains two sets of square brackets:
+
+```python
+race['languages']     # ['Common', 'Dwarvish'] — the whole list
+race['languages'][0]  # 'Common' — first item in the list
+race['languages'][1]  # 'Dwarvish' — second item
+```
+
+The first `[]` retrieves the list from the dictionary. The second `[]` indexes into it.
+
+The limitation of this approach is that hardcoding `[0]` and `[1]` assumes a fixed number of languages. Races with only one language, or three, break this. The solution — iterating over the list with a `for` loop — is covered in the next chapter.
+
+> 🔗 **Journal reference:** [Session 5](journal.md#session-5--june-5-2026) covers the full account of how these structures were built, including the consistent-keys mistake and how it was corrected.
 
 ---
 

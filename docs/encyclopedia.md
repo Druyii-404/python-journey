@@ -322,6 +322,47 @@ modifier = (14 - 10) // 2 # 2 (int)
 
 ## Collections
 
+### dict
+
+**Category:** Collection
+**Introduced:** [Session 5](journal.md#session-5--june-5-2026)
+**Guidebook reference:** [Chapter 6](guidebook.md#chapter-6-organising-data--collections)
+
+A dictionary — an unordered collection of key-value pairs. Keys are used to store and retrieve values by name rather than by position.
+
+**Syntax:**
+```python
+my_dict = {
+    'key': value,
+    'another_key': value
+}
+```
+
+**Accessing values:**
+```python
+my_dict['key']
+```
+
+**Example:**
+```python
+race = {
+    'name': 'Hill Dwarf',
+    'speed': 25,
+    'bonus_con': 2,
+    'bonus_wis': 1,
+    'languages': ['Common', 'Dwarvish']
+}
+
+race['name']           # 'Hill Dwarf'
+race['speed']          # 25
+race['languages']      # ['Common', 'Dwarvish']
+race['languages'][0]   # 'Common' — nested access
+```
+
+**Notes:** Keys are almost always strings. Values can be any type — including lists, other dicts, integers, or booleans. Accessing a key that doesn't exist raises a `KeyError`. When storing multiple dicts in a list, all dicts must share the same keys — missing keys cause `KeyError` at runtime when the code attempts to access them. Use `0`, `False`, or `[]` as defaults rather than omitting keys.
+
+---
+
 ### list
 
 **Category:** Collection
